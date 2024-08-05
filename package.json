@@ -1,0 +1,13 @@
+{
+    "description": "",
+    "main": "server.js",
+    "scripts": {
+        "start": "concurrently \"node server.js\" \"node imgProxy/server.js\""
+    },
+    "dependencies": {
+        "express": "^4.19.2"
+    },
+    "devDependencies": {
+        "concurrently": "^8.2.2"
+    }
+}
