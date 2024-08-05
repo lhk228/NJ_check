@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>GP MAP</title>
+        <script src="https://agis.epis.or.kr/ASD/pub2/js/jquery-3.4.1.js"></script>
+        <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.min.js"></script>
+        <script src="https://agis.epis.or.kr/ASD/js/lib/openlayers/OpenLayers.js"></script>
+        <script src="https://agis.epis.or.kr/ASD/js/lib/proj4js/proj4.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+        <script src="
+https://cdn.jsdelivr.net/npm/axios-jsonp@1.0.4/dist/index.min.js
+"></script>
+        <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+        <script src="farmap_api.js"></script>
+        <script src="map.js"></script>
+        <script src="event.js"></script>
+        <link rel="stylesheet" href="map.css" />
+    </head>
+    <body>
+        <div id="mapContainer">
+            <div id="mapDiv1"></div>
+            <div id="mapDiv2"></div>
+        </div>
+        <div id="mapCanvasContainer">
+            <canvas id="mapCanvas1"></canvas>
+            <canvas id="mapCanvas2"></canvas>
+        </div>
+        <div class="search-box">
+            <input id="INPUT_PNU" type="text" placeholder="PNU코드 입력" />
+            <button id="BTN_PNU">조회</button>
+            <button id="BTN_VECTOR">벡터</button>
+            <button id="BTN_YEAR">년도변경</button>
+            <button id="BTN_COPY_CANVAS">원본 이미지복사</button>
+            <button id="BTN_DOWNLOAD">원본 이미지 다운로드</button>
+            <button id="BTN_LAYER_DOWNLOAD">레이어 다운로드</button>
+        </div>
+        <ul>
+            테스트용
+            <li>4183039523115190002 팜맵데이터 X</li>
+            <li>5011025021139990002 팝맵데이터 O</li>
+            <li>5011025922112370001 팝맵데이터 O</li>
+            <li>이미지 다운로드 준비 <span name="img-download">F</span></li>
+        </ul>
+    </body>
+</html>
