@@ -98,13 +98,37 @@ async function getFarmmapDataSeachPnu(pnu) {
     farmmapObj.removeLayer("vectorLayer", map);
     const data = await fetchData("farmmapApi/getFarmmapDataSeachPnu.do", params);
 
+    console.log("data :", data);
     addVector(data);
 
-    setTimeout(async () => {
-        await handleMapDownload("1");
-        await handleMapDownload("2");
-        // convertLayerImage();
-    }, 2000);
+    await handleMapDownload("1");
+    await handleMapDownload("2");
+
+    let isAllReady = Object.values(READY_CHECK).every((item) => item.check === true);
+
+    // isAllReady = false;
+
+    if (isAllReady === true) {
+        $(`[name='img-download']`).val("S");
+        // var canvasDownload = document.createElement("a");
+        // canvasDownload.download = "canvas-image.png"; // 다운로드할 파일 이름
+        // canvasDownload.href = READY_CHECK.img.link;
+        // canvasDownload.click();
+
+        // // 레이어 이미지 다운로드 (아직 다운로드하지 않았을 경우에만)
+        // if (!layerImageDownloaded) {
+        //     const layerDownload = document.createElement("a");
+        //     layerDownload.download = "layer.png";
+        //     layerDownload.href = READY_CHECK.layer.link; // 레이어 이미지 URL을 저장했다고 가정
+        //     layerDownload.click();
+        //     layerImageDownloaded = true; // 레이어 이미지 다운로드 완료 표시
+        // }
+    }
+
+    if (isAllReady === false) {
+        console.error("데이터 로드 실패");
+        $(`[name='img-download']`).val("F");
+    }
 }
 
 //ajax 호출
