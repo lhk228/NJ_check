@@ -110,6 +110,7 @@ async function getFarmmapDataSeachPnu(pnu) {
 
     if (isAllReady === true) {
         $(`[name='img-download']`).val("S");
+        $(`[name='img-download']`).attr("value", "S");
         // var canvasDownload = document.createElement("a");
         // canvasDownload.download = "canvas-image.png"; // 다운로드할 파일 이름
         // canvasDownload.href = READY_CHECK.img.link;
@@ -128,6 +129,7 @@ async function getFarmmapDataSeachPnu(pnu) {
     if (isAllReady === false) {
         console.error("데이터 로드 실패");
         $(`[name='img-download']`).val("F");
+        $(`[name='img-download']`).attr("value", "F");
     }
 }
 
