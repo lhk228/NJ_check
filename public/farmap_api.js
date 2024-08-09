@@ -284,10 +284,6 @@ var mapDivId;
                     var x = Math.round((bounds.left - this.maxExtent.left) / (res * this.tileSize.w));
                     var y = Math.round((this.maxExtent.top - bounds.top) / (res * this.tileSize.h));
                     var z = this.getServerZoom() + 5;
-<<<<<<< HEAD
-                    console.log("year :", year);
-=======
->>>>>>> dev
                     year = year || "AIRPHOTO_2022";
                     if (x >= 0 && y >= 0) {
                         return (
