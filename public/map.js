@@ -142,7 +142,7 @@ async function getFarmmapDataSeachPnu(pnu, type) {
         // }
     }
 
-    if (isAllReady === false) {
+    if (isAllReady === false && type === "farmmap") {
         console.error("데이터 로드 실패");
         $(`[name='img-download']`).val("F");
         $(`[name='img-download']`).attr("value", "F");
