@@ -18,6 +18,14 @@ $(function () {
         window.location.href = `index.html?year=${year}&pnu=${pnu}`;
     });
 
+    $(`#BTN_TYPE`).click(function () {
+        const { year, pnu, type } = getQueryParams();
+
+        var mapType = type === "farmmap" ? "base" : "farmmap";
+        console.log("mapType:", mapType);
+
+        window.location.href = `index.html?year=${year}&pnu=${pnu}&type=${mapType}`;
+    });
     $(`#BTN_VECTOR`).click(function () {
         toggleVector();
     });
@@ -52,6 +60,7 @@ function getQueryParams() {
     return {
         year: params.get("year"),
         pnu: params.get("pnu"),
+        type: params.get("type"),
     };
 }
 
@@ -125,7 +134,7 @@ async function copyMapToCanvas(target) {
 
 //base64 이미지로 변환(세탁)
 function convertImgToBase64(url) {
-    const result = axios.post("http://127.0.0.1:3000/baseImg", url);
+    const result = axios.post("http://127.0.0.1:5501/baseImg", url);
     return result;
 }
 

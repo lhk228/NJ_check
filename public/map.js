@@ -2,6 +2,8 @@ const apiKey = "Fj6bWPPoqYIcDAna3Bce";
 const domain = "http://127.0.0.1:5500";
 var map;
 var map2;
+var map3;
+var map4;
 var mapBounds = new OpenLayers.Bounds(-20037508.34, -20037508.34, 20037508.34, 20037508.34);
 var mapMinZoom = 7;
 var mapMaxZoom = 20;
@@ -70,39 +72,53 @@ function makeLayer(year) {
 }
 
 //맵 생성
-function init(year = "2022", pnu = "3611031024201550000") {
+async function init(year = "2022", pnu = "3611031024201550000") {
+    //팜맵 객체 생성
     if (!map) {
         map = farmmapObj.init("mapDiv1");
         map2 = farmmapObj.init("mapDiv2");
+        map3 = farmmapObj.init("mapDiv3");
+        map4 = farmmapObj.init("mapDiv4");
     }
     reqUrl = farmmapObj.rootUri;
 
+    //레이어 생성
     const layer = makeLayer(year);
-    const layer2 = makeLayer(year - 1);
+    const layer2 = makeLayer(year);
+    const layer3 = makeLayer(year - 1);
+    const layer4 = makeLayer(year - 1);
 
-    map.addLayer(layer);
-    map2.addLayer(layer2);
+    //최신년도
+    map.addLayer(layer); //팜맵
+    map2.addLayer(layer2); //베이스
 
-    getFarmmapDataSeachPnu(pnu);
+    //이전년도
+    map3.addLayer(layer3); //팜맵
+    map4.addLayer(layer4); //베이스
+
+    await getFarmmapDataSeachPnu(pnu, "base");
+    await getFarmmapDataSeachPnu(pnu, "farmmap");
 }
 
 //pnu코드로 데이터 조회
-async function getFarmmapDataSeachPnu(pnu) {
+async function getFarmmapDataSeachPnu(pnu, type) {
     var params = {};
     params.pnu = pnu;
-    params.mapType = "farmmap";
+    params.mapType = type;
     params.columnType = "KOR";
     params.apiKey = apiKey;
     params.domain = domain;
     params.apiVersion = "v1";
-    farmmapObj.removeLayer("vectorLayer", map);
+    // farmmapObj.removeLayer("vectorLayer", map);
     const data = await fetchData("farmmapApi/getFarmmapDataSeachPnu.do", params);
 
-    console.log("data :", data);
-    addVector(data);
+    addVector(data, type);
 
-    await handleMapDownload("1");
-    await handleMapDownload("2");
+    if (type === "farmmap") {
+        //1,3번에 팜맵지도
+        await handleMapDownload("1");
+        await handleMapDownload("3");
+    }
 
     let isAllReady = Object.values(READY_CHECK).every((item) => item.check === true);
 
@@ -126,7 +142,7 @@ async function getFarmmapDataSeachPnu(pnu) {
         // }
     }
 
-    if (isAllReady === false) {
+    if (isAllReady === false && type === "farmmap") {
         console.error("데이터 로드 실패");
         $(`[name='img-download']`).val("F");
         $(`[name='img-download']`).attr("value", "F");
@@ -153,7 +169,7 @@ async function fetchData(url, params) {
 }
 
 //벡터 레이어 추가
-function addVector(data) {
+function addVector(data, type) {
     if (data == null || data?.output.farmmapData.count === 0) {
         READY_CHECK.data.check = false;
         return;
@@ -163,13 +179,21 @@ function addVector(data) {
     var layerName = "vectorLayer";
     var layerOption = {
         hover: false,
-        multiple: false,
+        multiple: true,
         toggle: true,
     };
-    farmmapObj.addVectorLayer(layerName, layerOption, map);
-    farmmapObj.addVectorLayer(layerName, layerOption, map2);
+    if (type === "farmmap") {
+        //1,3번에 팜맵지도
+        farmmapObj.addVectorLayer(layerName, layerOption, map);
+        farmmapObj.addVectorLayer(layerName, layerOption, map3);
+    } else {
+        //2,4번에 베이스지도
+        farmmapObj.addVectorLayer(layerName, layerOption, map2);
+        farmmapObj.addVectorLayer(layerName, layerOption, map4);
+    }
 
     var farmmapData;
+
     if (data.output.farmmapData != null) {
         farmmapData = data.output.farmmapData;
         for (var k = 0; k < farmmapData.data.length; k++) {
@@ -218,16 +242,22 @@ function addVector(data) {
                     // labelOutlineWidth: 1,
                 },
             };
-            farmmapObj.addVector("vectorLayer", vectorOptions, map);
-            farmmapObj.addVector("vectorLayer", vectorOptions, map2);
+            if (type === "farmmap") {
+                farmmapObj.addVector("vectorLayer", vectorOptions, map);
+                farmmapObj.addVector("vectorLayer", vectorOptions, map3);
+                map.zoomToExtent(farmmapObj.getObject("layer", "vectorLayer", map).features[0].geometry.getBounds());
+                map.zoomTo(20);
+                map3.zoomToExtent(farmmapObj.getObject("layer", "vectorLayer", map3).features[0].geometry.getBounds());
+                map3.zoomTo(20);
+            } else {
+                farmmapObj.addVector("vectorLayer", vectorOptions, map2);
+                farmmapObj.addVector("vectorLayer", vectorOptions, map4);
+                map2.zoomToExtent(farmmapObj.getObject("layer", "vectorLayer", map2).features[0].geometry.getBounds());
+                map2.zoomTo(20);
+                map4.zoomToExtent(farmmapObj.getObject("layer", "vectorLayer", map4).features[0].geometry.getBounds());
+                map4.zoomTo(20);
+            }
         }
-    }
-
-    if (farmmapObj.getObject("layer", "vectorLayer", map).features.length > 0) {
-        map.zoomToExtent(farmmapObj.getObject("layer", "vectorLayer", map).features[0].geometry.getBounds());
-        map.zoomTo(15);
-        map2.zoomToExtent(farmmapObj.getObject("layer", "vectorLayer", map2).features[0].geometry.getBounds());
-        map2.zoomTo(15);
     }
 }
 
