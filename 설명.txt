@@ -1,20 +1,3 @@
-html 태그 id
-
-입력한 년도의 지도 > mapDiv1
-입력한 년도 -1지도 > mapDiv2
-
-입력한 년도의 지도(원본) > mapCanvas1
-입력한 년도 -1지도(원본) > mapCanvas2
-
-다운로드 준비 확인용 태그 name
-
-<span name='img-download'> F </span>
-
-기본 F => 모든 레이어 로드시 S로 변경
-
-웹 URL 예시
-
-
 http://127.0.0.1:5500/index.html?year=2021&pnu=5011025021139990002
 
 추후 http://127.0.0.1:5500 대신 VM 웹 IP로 변경될 예정
