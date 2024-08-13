@@ -216,7 +216,7 @@ function addVector(data, type) {
                 data: feature,
                 style: {
                     fillColor: "#ff0000",
-                    fillOpacity: 0.5,
+                    fillOpacity: 1,
                     strokeWidth: 1,
                     strokeColor: "#ff0000",
                     strokeLinecap: "round",
