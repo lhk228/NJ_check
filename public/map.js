@@ -101,6 +101,7 @@ async function init(year = "2022", pnu = "3611031024201550000") {
 }
 
 //pnu코드로 데이터 조회
+var checkCnt = 0;
 async function getFarmmapDataSeachPnu(pnu, type) {
     var params = {};
     params.pnu = pnu;
@@ -109,43 +110,28 @@ async function getFarmmapDataSeachPnu(pnu, type) {
     params.apiKey = apiKey;
     params.domain = domain;
     params.apiVersion = "v1";
-    // farmmapObj.removeLayer("vectorLayer", map);
     const data = await fetchData("farmmapApi/getFarmmapDataSeachPnu.do", params);
 
     addVector(data, type);
 
     if (type === "farmmap") {
-        //1,3번에 팜맵지도
-        await handleMapDownload("1");
-        await handleMapDownload("3");
+        (await handleConvertSync("1")) && checkCnt++;
+        (await handleConvertSync("3")) && checkCnt++;
+    } else {
+        (await handleConvertSync("2")) && checkCnt++;
+        (await handleConvertSync("4")) && checkCnt++;
     }
 
     let isAllReady = Object.values(READY_CHECK).every((item) => item.check === true);
 
-    // isAllReady = false;
-
-    if (isAllReady === true) {
-        $(`[name='img-download']`).val("S");
-        $(`[name='img-download']`).attr("value", "S");
-        // var canvasDownload = document.createElement("a");
-        // canvasDownload.download = "canvas-image.png"; // 다운로드할 파일 이름
-        // canvasDownload.href = READY_CHECK.img.link;
-        // canvasDownload.click();
-
-        // // 레이어 이미지 다운로드 (아직 다운로드하지 않았을 경우에만)
-        // if (!layerImageDownloaded) {
-        //     const layerDownload = document.createElement("a");
-        //     layerDownload.download = "layer.png";
-        //     layerDownload.href = READY_CHECK.layer.link; // 레이어 이미지 URL을 저장했다고 가정
-        //     layerDownload.click();
-        //     layerImageDownloaded = true; // 레이어 이미지 다운로드 완료 표시
-        // }
-    }
-
-    if (isAllReady === false && type === "farmmap") {
-        console.error("데이터 로드 실패");
-        $(`[name='img-download']`).val("F");
-        $(`[name='img-download']`).attr("value", "F");
+    if (checkCnt === 4) {
+        if (isAllReady === true) {
+            $(`[name='img-download']`).val("S");
+            $(`[name='img-download']`).attr("value", "S");
+        } else {
+            $(`[name='img-download']`).val("F");
+            $(`[name='img-download']`).attr("value", "F");
+        }
     }
 }
 
